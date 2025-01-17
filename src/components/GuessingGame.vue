@@ -14,19 +14,19 @@
         <p>Guesses Remaining: {{ guessesRemaining }}</p>
       </div>
     </div>
-
+    <!-- Controls -->
     <div class="col" id="controls">
+      <!-- Upper Bound Selection -->
       <label for="upper-bound">Select Upper Bound</label>
       <input class="form-range" id="upper-bound" type="range"
              min="10" v-model="upperBound">
       <label for="guesses-remaining">Select Number of Guesses</label>
-
+      <!-- Number of Guesses Selection -->
       <div class="input-group">
         <input class="form-control" id="guesses-remaining"
-               min="0" type="number" v-model="guessesRemaining">
+               min="0" type="number" @input="this.manual = true;" v-model="guessesRemaining">
         <button class="btn btn-primary" id="confirm-guesses-btn" type="button"
-                @click="disableInput('guesses-remaining');
-                disableInput('confirm-guesses-btn');">
+                @click="confirmNumberOfGuesses">
           Confirm
         </button>
       </div>
@@ -40,14 +40,11 @@
       </p>
     </div>
   </div>
-
   <div class="row">
     <button class="row btn btn-success align-content-center" v-if="gameOver" @click="initializeGame">
       Play Again
     </button>
   </div>
-
-
 </template>
 
 <script>
@@ -56,6 +53,19 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 export default {
   name: 'Guessing Game',
+  data() {
+    onMounted(this.initializeGame);
+
+    return {
+      upperBound: 100,
+      gameOver: false,
+      number: Math.round(Math.random() * 100 % 100),
+      guessedNumber: 0,
+      displayMessage: null,
+      guesses: [],
+      manual: false
+    }
+  },
   methods: {
     checkNumber() {
       if(this.number === this.guessedNumber) {
@@ -63,7 +73,6 @@ export default {
         this.gameOver = true;
       }
       if(this.guessesRemaining === 1) {
-        //TODO the game over message should appear after the user makes a guess when 1 is remaining
         this.displayMessage = `You ran out of guesses! The number was ${this.number}`;
 
         this.gameOver = true;
@@ -86,35 +95,40 @@ export default {
     initializeGame() {
       document.querySelectorAll('input')
           .forEach(e => e.removeAttribute('disabled'));
-      document.getElementById('guess-btn')
-          .removeAttribute('disabled');
+      document.querySelectorAll('button')
+          .forEach(e => e.removeAttribute('disabled'));
       this.displayMessage = '';
       this.gameOver = false;
       this.guesses = [];
+      this.guessesRemaining = Math.round(this.upperBound / 20) - this.guesses.length;
       this.number = Math.round(Math.random() * 100 % 100);
     },
     disableInput(elementId) {
       document.getElementById(elementId)
           .setAttribute('disabled', true);
+    },
+    confirmNumberOfGuesses()
+    {
+      this.disableInput('guesses-remaining');
+      this.disableInput('confirm-guesses-btn');
     }
   },
   computed: {
     guessesRemaining() {
-      let remaining = Math.round(this.upperBound / 20) - this.guesses.length;
-      if(remaining < 0) return 0;
-      return remaining;
-    }
-  },
-  data() {
-    onMounted(this.initializeGame);
+      // TODO
+      //* Currently, guesses remaining only updates by moving the upper bound
+      //* Changing it manually doesn't do anything
+      //* User should be able to change the number of guesses manually at the start of the game
+      //* Modifying the upper bound should update the number of guesses
 
-    return {
-      upperBound: 100,
-      gameOver: false,
-      number: Math.round(Math.random() * 100 % 100),
-      guessedNumber: 0,
-      displayMessage: null,
-      guesses: [],
+      let remaining = Math.round(this.upperBound / 20) - this.guesses.length;
+      if (remaining < 0) return 0;
+      if (this.manual)
+      {
+        this.manual = false;
+        return document.getElementById('guesses-remaining').value;
+      }
+      return remaining;
     }
   }
 };
