@@ -18,14 +18,14 @@
     <div class="col" id="controls">
       <!-- Upper Bound Selection -->
       <label for="upper-bound">Select Upper Bound</label>
-      <input class="form-range" id="upper-bound" type="range"
+      <input class="form-range controls" id="upper-bound" type="range"
              min="10" v-model="upperBound">
       <label for="guesses-remaining">Select Number of Guesses</label>
       <!-- Number of Guesses Selection -->
       <div class="input-group">
-        <input class="form-control" id="guesses-remaining"
+        <input class="form-control controls" id="guesses-remaining"
                min="0" type="number" @input="this.manual = true;" v-model="guessesRemaining">
-        <button class="btn btn-primary" id="confirm-guesses-btn" type="button"
+        <button class="btn btn-primary controls" id="confirm-guesses-btn" type="button"
                 @click="confirmNumberOfGuesses">
           Confirm
         </button>
@@ -63,6 +63,7 @@ export default {
       guessedNumber: 0,
       displayMessage: null,
       guesses: [],
+      guessesRemaining: 5,
       manual: false
     }
   },
@@ -109,12 +110,12 @@ export default {
     },
     confirmNumberOfGuesses()
     {
-      this.disableInput('guesses-remaining');
-      this.disableInput('confirm-guesses-btn');
+      document.querySelectorAll('.controls')
+          .forEach(e => this.disableInput(e.id));
     }
   },
-  computed: {
-    guessesRemaining() {
+  watch: {
+    upperBound() {
       // TODO
       //* Currently, guesses remaining only updates by moving the upper bound
       //* Changing it manually doesn't do anything
@@ -126,9 +127,9 @@ export default {
       if (this.manual)
       {
         this.manual = false;
-        return document.getElementById('guesses-remaining').value;
+        remaining = document.getElementById('guesses-remaining').value;
       }
-      return remaining;
+      this.guessesRemaining = remaining;
     }
   }
 };

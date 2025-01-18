@@ -1,5 +1,5 @@
 <template>
-  <div class="position-absolute bottom-0 text-center" id="footer">
+  <div class="position-fixed bottom-0 text-center" id="footer">
     <p class="mt-2">Logan Brooks &copy;{{ copyrightYear }}</p>
   </div>
 </template>
@@ -12,7 +12,7 @@
       }
     }
   }
-</script>
+</script> q
 
 <style scoped>
   #footer

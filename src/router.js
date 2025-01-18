@@ -5,7 +5,7 @@ import About from "@/components/About.vue";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: '/GuessingGame', name: 'Guessing Game', component: GuessingGame},
+        { path: '/', name: 'Guessing Game', component: GuessingGame},
         { path: '/About', name: 'About', component: About}
     ]
 });
