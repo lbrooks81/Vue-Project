@@ -23,8 +23,9 @@
       <label for="guesses-remaining">Select Number of Guesses</label>
       <!--/ Number of Guesses Selection -->
       <div class="input-group">
+        <!-- TODO users can still enter non-number data types despite the type of this input being number???-->
         <input class="form-control controls" id="guesses-remaining"
-               min="0" type="number" v-model="guessesRemaining">
+               min="0" type="number" v-model="guessesRemaining" @input="isNumber($event)">
         <button class="btn btn-primary controls" id="confirm-guesses-btn" type="button"
                 @click="confirmNumberOfGuesses">
           Confirm
@@ -65,7 +66,8 @@ export default {
       guesses: [],
       guessesRemaining: 5,
       selectedGuesses: 5,
-      manual: false
+      manual: false,
+      number: 0
     }
   },
   methods: {
@@ -107,7 +109,8 @@ export default {
       this.gameOver = false;
       this.guesses = [];
       this.guessesRemaining = this.selectedGuesses;
-      this.number++;
+      this.generateNumber();
+      console.log(this.number);
     },
     disableInput(elementId) {
       document.getElementById(elementId)
@@ -120,6 +123,14 @@ export default {
       //* Disable controls during gameplay
       document.querySelectorAll('.controls')
           .forEach(e => this.disableInput(e.id));
+    },
+    generateNumber()
+    {
+      this.number = Math.floor(Math.random() * (this.upperBound + 1));
+    },
+    isNumber(event)
+    {
+
     }
   },
 
@@ -128,13 +139,6 @@ export default {
       let remaining = Math.round(this.upperBound / 20) - this.guesses.length;
       if (remaining < 0) return 0;
       this.guessesRemaining = remaining;
-    }
-  },
-  computed:
-  {
-    number() {
-      //TODO not random after play again
-      return Math.floor(Math.random() * (this.upperBound + 1));
     }
   }
 };
