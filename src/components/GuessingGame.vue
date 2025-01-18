@@ -59,35 +59,35 @@ export default {
     return {
       upperBound: 100,
       gameOver: false,
-      number: Math.round(Math.random() * 100 % 100),
       guessedNumber: 0,
       displayMessage: null,
       guesses: [],
       guessesRemaining: 5,
+      selectedGuesses: 5,
       manual: false
     }
   },
   methods: {
     checkNumber() {
-      if(this.number === this.guessedNumber) {
+      if (this.number === this.guessedNumber) {
         this.displayMessage = 'You got it!';
         this.gameOver = true;
       }
-      if(this.guessesRemaining === 1) {
+      if (this.guessesRemaining === 1) {
         this.displayMessage = `You ran out of guesses! The number was ${this.number}`;
 
         this.gameOver = true;
         this.disableInput('guess-input');
       }
-      if(this.gameOver)
+      if (this.gameOver)
       {
         this.disableInput('guess-btn');
         this.disableInput('confirm-guesses-btn')
       }
-      else if(this.guessedNumber > this.number) {
+      else if (this.guessedNumber > this.number) {
         this.displayMessage = 'Too high!';
       }
-      else if(this.guessedNumber < this.number) {
+      else if (this.guessedNumber < this.number) {
         this.displayMessage = 'Too low!';
       }
       this.guessesRemaining--;
@@ -101,27 +101,23 @@ export default {
       this.displayMessage = '';
       this.gameOver = false;
       this.guesses = [];
-      this.guessesRemaining = Math.round(this.upperBound / 20) - this.guesses.length;
-      this.number = Math.round(Math.random() * 100 % 100);
+      this.guessesRemaining = this.selectedGuesses;
     },
     disableInput(elementId) {
       document.getElementById(elementId)
-          .setAttribute('disabled', true);
+          .setAttribute('disabled', 'true');
     },
     confirmNumberOfGuesses()
     {
+      this.selectedGuesses = document.getElementById('guesses-remaining').value;
       document.querySelectorAll('.controls')
           .forEach(e => this.disableInput(e.id));
     }
   },
+  // TODO logic error
+  //* After clicking play again, the guesses will be allowed to go under zero and the game will never end
   watch: {
     upperBound() {
-      // TODO
-      //* Currently, guesses remaining only updates by moving the upper bound
-      //* Changing it manually doesn't do anything
-      //* User should be able to change the number of guesses manually at the start of the game
-      //* Modifying the upper bound should update the number of guesses
-
       let remaining = Math.round(this.upperBound / 20) - this.guesses.length;
       if (remaining < 0) return 0;
       if (this.manual)
@@ -130,6 +126,12 @@ export default {
         remaining = document.getElementById('guesses-remaining').value;
       }
       this.guessesRemaining = remaining;
+    }
+  },
+  computed:
+  {
+    number() {
+      return Math.round(Math.random() * this.upperBound);
     }
   }
 };
