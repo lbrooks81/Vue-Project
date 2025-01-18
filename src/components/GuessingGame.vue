@@ -14,17 +14,17 @@
         <p>Guesses Remaining: {{ guessesRemaining }}</p>
       </div>
     </div>
-    <!-- Controls -->
+    <!--/ Controls -->
     <div class="col" id="controls">
-      <!-- Upper Bound Selection -->
+      <!--/ Upper Bound Selection -->
       <label for="upper-bound">Select Upper Bound</label>
       <input class="form-range controls" id="upper-bound" type="range"
              min="10" v-model="upperBound">
       <label for="guesses-remaining">Select Number of Guesses</label>
-      <!-- Number of Guesses Selection -->
+      <!--/ Number of Guesses Selection -->
       <div class="input-group">
         <input class="form-control controls" id="guesses-remaining"
-               min="0" type="number" @input="this.manual = true;" v-model="guessesRemaining">
+               min="0" type="number" v-model="guessesRemaining">
         <button class="btn btn-primary controls" id="confirm-guesses-btn" type="button"
                 @click="confirmNumberOfGuesses">
           Confirm
@@ -41,7 +41,8 @@
     </div>
   </div>
   <div class="row">
-    <button class="row btn btn-success align-content-center" v-if="gameOver" @click="initializeGame">
+    <button class="row btn btn-success align-content-center"
+            v-if="gameOver" @click="initializeGame">
       Play Again
     </button>
   </div>
@@ -69,6 +70,7 @@ export default {
   },
   methods: {
     checkNumber() {
+      //TODO think of a way to maybe clean this up
       if (this.number === this.guessedNumber) {
         this.displayMessage = 'You got it!';
         this.gameOver = true;
@@ -94,14 +96,18 @@ export default {
       this.guesses.push(this.guessedNumber);
     },
     initializeGame() {
+      //* Enable inputs and buttons
       document.querySelectorAll('input')
           .forEach(e => e.removeAttribute('disabled'));
       document.querySelectorAll('button')
           .forEach(e => e.removeAttribute('disabled'));
+
+      //* Reset variables
       this.displayMessage = '';
       this.gameOver = false;
       this.guesses = [];
       this.guessesRemaining = this.selectedGuesses;
+      this.number++;
     },
     disableInput(elementId) {
       document.getElementById(elementId)
@@ -109,29 +115,26 @@ export default {
     },
     confirmNumberOfGuesses()
     {
-      this.selectedGuesses = document.getElementById('guesses-remaining').value;
+      //* Store initial guesses to reset to after clicking play again
+      this.selectedGuesses = parseInt(document.getElementById('guesses-remaining').value);
+      //* Disable controls during gameplay
       document.querySelectorAll('.controls')
           .forEach(e => this.disableInput(e.id));
     }
   },
-  // TODO logic error
-  //* After clicking play again, the guesses will be allowed to go under zero and the game will never end
+
   watch: {
     upperBound() {
       let remaining = Math.round(this.upperBound / 20) - this.guesses.length;
       if (remaining < 0) return 0;
-      if (this.manual)
-      {
-        this.manual = false;
-        remaining = document.getElementById('guesses-remaining').value;
-      }
       this.guessesRemaining = remaining;
     }
   },
   computed:
   {
     number() {
-      return Math.round(Math.random() * this.upperBound);
+      //TODO not random after play again
+      return Math.floor(Math.random() * (this.upperBound + 1));
     }
   }
 };
