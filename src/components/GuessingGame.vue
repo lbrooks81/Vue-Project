@@ -25,7 +25,7 @@
       <div class="input-group">
         <!-- TODO users can still enter non-number data types despite the type of this input being number???-->
         <input class="form-control controls" id="guesses-remaining"
-               min="0" type="number" v-model.number="guessesRemaining" @input="isNumber($event)">
+               min="0" type="number" v-model="guessesRemaining">
         <button class="btn btn-primary controls" id="confirm-guesses-btn" type="button"
                 @click="confirmNumberOfGuesses">
           Confirm
@@ -127,22 +127,6 @@ export default {
     generateNumber()
     {
       this.number = Math.floor(Math.random() * (this.upperBound + 1));
-    },
-    isNumber(event)
-    {
-      //TODO This by all accounts should work but it doesn't
-      let inputString = event.target.value;
-      console.log(`Initial input string: ${inputString}`);
-
-      //* Slice off invalid characters
-      if(isNaN(parseInt(event.data)))
-      {
-        event.target.value = Number(inputString.slice(0, -1));
-        console.log("inputString after slice: ", inputString);
-        return;
-      }
-      //* Reassign value
-      event.target.value = inputString;
     }
   },
 
