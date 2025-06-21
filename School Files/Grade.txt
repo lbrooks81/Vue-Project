@@ -1,0 +1,21 @@
+39.6/50
+
+Categories
+
+Effort - 10/12
+
+Constraints Met - 12/12
+
+Effective Componentization - 11/11
+
+UI/UX - 5/6
+- (-1) The header and footer are not aligned properly with the page.
+
+Bug-Free - 2/5
+- (-3) Setting the number lower than 100 causes the number generated to be out of range occasionally. For example, I set the upper bound to 10 and the random number was 427.
+
+Source Code Cleanliness - 4/4
+
+Due to the amount of missing files in the repo, I had to effectively recreate the project. I have to grade it based on my recreation with the files you provided. I will be deducting 10% for the submission.
+
+44 - 10% = 39.6
